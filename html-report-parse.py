@@ -3,6 +3,26 @@ import os
 import pandas as pd
 import functools
 
+'''
+Decorators
+'''
+
+# def clean_text(*args, **kwargs):
+#     def decorator_clean_text(func):
+#         @functools.wraps(func)
+#         def wrapper(*args, **kwargs):
+#             contents = func(*args, **kwargs)
+
+#             for kwarg in kwargs:
+#                 if "space" in kwarg:
+#                     contents = contents.replace(kwargs[kwarg], " ")
+
+#             for arg in args:
+#                 contents = contents.replace(arg, "")
+            
+#             return contents
+
+#         return wrapper
 
 
 '''
@@ -66,11 +86,8 @@ fname = "./samples/Job 29 BARKER & STONEHOUSE OPEN modified.htm"
 Main
 '''
 
-# print(os.path.curdir)
-
 # Open file to process and store in variable
 report_contents = read_file(fname)
-
 
 # Clean extra characters
 cleaned_contents = remove_characters(report_contents,"<colgroup>", space_1="   ", space_2="  ", space_3="&nbsp;")
