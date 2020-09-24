@@ -7,23 +7,30 @@ import functools
 Decorators
 '''
 
-# def clean_text(*args, **kwargs):
-#     def decorator_clean_text(func):
-#         @functools.wraps(func)
-#         def wrapper(*args, **kwargs):
-#             contents = func(*args, **kwargs)
+def remove_nbsp(func):
 
-#             for kwarg in kwargs:
-#                 if "space" in kwarg:
-#                     contents = contents.replace(kwargs[kwarg], " ")
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
 
-#             for arg in args:
-#                 contents = contents.replace(arg, "")
-            
-#             return contents
+        original_result = func(*args, **kwargs)
+        modified_result = original_result.replace("&nbsp;", "")
 
-#         return wrapper
+        return modified_result
 
+    return wrapper
+
+def remove_extra_space(func):
+
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+
+        modified_result = func(*args, **kwargs)
+        while modified_result.count("  ") > 0:
+            modified_result = modified_result.replace("  ", " ")
+
+        return modified_result
+    
+    return wrapper
 
 '''
 Classes
@@ -67,7 +74,8 @@ def remove_characters(doc_text: str, *args: str, **kwargs: str) -> str:
     
     return cleaned_text
 
-@clean_text
+@remove_nbsp
+@remove_extra_space
 def read_file(filename: str) -> str:
 
     rfile = open(filename, 'r')
@@ -90,8 +98,8 @@ Main
 report_contents = read_file(fname)
 
 # Clean extra characters
-cleaned_contents = remove_characters(report_contents,"<colgroup>", space_1="   ", space_2="  ", space_3="&nbsp;")
+# cleaned_contents = remove_characters(report_contents,"<colgroup>", space_1="   ", space_2="  ", space_3="&nbsp;")
 
 # Read data into pandas dataframe
-data = pd.read_html(cleaned_contents, header=0)
+data = pd.read_html(report_contents, header=0)
 print(data[0].head())
