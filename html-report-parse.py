@@ -7,30 +7,22 @@ import functools
 Decorators
 '''
 
-def remove_nbsp(func):
+def replace_with_space(to_remove):
 
-    @functools.wraps(func)
-    def wrapper(*args, **kwargs):
+    def decorator(func):
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
 
-        original_result = func(*args, **kwargs)
-        modified_result = original_result.replace("&nbsp;", "")
+            result = func(*args, **kwargs)
+            while result.count(to_remove) > 0:
+                result = result.replace(to_remove, " ")
 
-        return modified_result
+            return result
 
-    return wrapper
+        return wrapper
 
-def remove_extra_space(func):
+    return decorator
 
-    @functools.wraps(func)
-    def wrapper(*args, **kwargs):
-
-        modified_result = func(*args, **kwargs)
-        while modified_result.count("  ") > 0:
-            modified_result = modified_result.replace("  ", " ")
-
-        return modified_result
-    
-    return wrapper
 
 '''
 Classes
@@ -62,20 +54,8 @@ class ReportHTMParser(HTMLParser):
 Functions
 '''
 
-def remove_characters(doc_text: str, *args: str, **kwargs: str) -> str:
-    cleaned_text = doc_text
-
-    for kwarg in kwargs:
-        if "space" in kwarg:
-            cleaned_text = cleaned_text.replace(kwargs[kwarg], " ")
-
-    for arg in args:
-        cleaned_text = cleaned_text.replace(arg, "")
-    
-    return cleaned_text
-
-@remove_nbsp
-@remove_extra_space
+@replace_with_space("  ")
+@replace_with_space("&nbsp;")
 def read_file(filename: str) -> str:
 
     rfile = open(filename, 'r')
@@ -97,8 +77,6 @@ Main
 # Open file to process and store in variable
 report_contents = read_file(fname)
 
-# Clean extra characters
-# cleaned_contents = remove_characters(report_contents,"<colgroup>", space_1="   ", space_2="  ", space_3="&nbsp;")
 
 # Read data into pandas dataframe
 data = pd.read_html(report_contents, header=0)
