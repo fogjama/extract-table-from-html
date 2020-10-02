@@ -1,4 +1,3 @@
-from html.parser import HTMLParser
 import os
 import pandas as pd
 import functools
@@ -22,32 +21,6 @@ def replace_with_space(to_remove):
         return wrapper
 
     return decorator
-
-
-'''
-Classes
-'''
-
-class ReportHTMParser(HTMLParser):
-    def handle_starttag(self, tag, attrs):
-        if "table" in tag:
-            print("Table ")
-            for attr in attrs:
-                print("attr:", attr)
-            # print("New table")
-        elif "tr" in tag:
-            print("New row: ")
-            for attr in attrs:
-                print("attr:", attr)
-        # elif "td"  in tag:
-        #     print("New Cell")
-
-    def handle_endtag(self, tag):
-        pass
-
-    def handle_data(self, data):
-        # print(data)
-        pass
 
 
 '''
