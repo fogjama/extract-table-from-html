@@ -41,16 +41,20 @@ def read_file(filename: str) -> str:
 Variables
 '''
 
-fname = "./samples/Job 29 BARKER & STONEHOUSE OPEN modified.htm"
+fname = "./samples/Job 29 BARKER & STONEHOUSE OPEN, Step 1.htm"
 
 '''
 Main
 '''
 
-# Open file to process and store in variable
-report_contents = read_file(fname)
+def process_report(fname):
+    # Open file to process and store in variable
+    report_contents = read_file(fname)
+
+    # Read data into pandas dataframe
+    data = pd.read_html(report_contents, header=0)
+    print(data[0].head())
 
 
-# Read data into pandas dataframe
-data = pd.read_html(report_contents, header=0)
-print(data[0].head())
+if __name__=='__main__':
+    process_report(fname)
